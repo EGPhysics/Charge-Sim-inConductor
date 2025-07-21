@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Charge Simulation</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
+</head>
+<body>
+  <script>
+    let charges = [];
+    function setup() {
+      createCanvas(800, 600);
+      for (let i = 0; i < 10; i++) {
+        charges.push({
+          pos: createVector(random(width), random(height)),
+          charge: random([-1, 1]),
+          vel: createVector(0, 0)
+        });
+      }
+    }
+    function draw() {
+      background(255);
+      for (let i = 0; i < charges.length; i++) {
+        let force = createVector(0, 0);
+        for (let j = 0; j < charges.length; j++) {
+          if (i !== j) {
+            let d = p5.Vector.sub(charges[i].pos, charges[j].pos);
+            let r = d.mag();
+            if (r > 1) {
+              let f = (charges[i].charge * charges[j].charge) / (r * r);
+              force.add(d.setMag(f * 0.1));
+            }
+          }
+        }
+        charges[i].vel.add(force);
+        charges[i].pos.add(charges[i].vel);
+        fill(charges[i].charge > 0 ? 'red' : 'blue');
+        circle(charges[i].pos.x, charges[i].pos.y, 10);
+      }
+    }
+  </script>
+</body>
+</html>
